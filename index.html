@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>曜夜 YaoYe</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Zen+Kaku+Gothic+New:wght@700;900&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --purple-deep:#241a3f;
+    --purple-mid:#4c3f82;
+    --purple-line:#2f2350;
+    --purple-light:#a89bdd;
+    --ink:#14111f;
+    --ink-soft:#1c1830;
+    --ink-softer:#241f3a;
+    --white:#f6f4fb;
+    --muted:#948da8;
+    --green:#3ecf7e;
+    --red:#e2555a;
+    --line:rgba(168,155,221,0.18);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--ink);
+    color:var(--white);
+    font-family:'Noto Sans TC','Space Grotesk',sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{background:var(--purple-mid);color:var(--white);}
+  a{color:inherit;}
+  button{font-family:inherit;}
+
+  .display{
+    font-family:'Zen Kaku Gothic New','Noto Sans TC',sans-serif;
+    font-weight:900;
+  }
+  .eyebrow{
+    font-family:'Space Grotesk',sans-serif;
+    letter-spacing:.22em;
+    text-transform:uppercase;
+    font-size:12px;
+    color:var(--purple-light);
+    font-weight:600;
+  }
+
+  header{
+    position:sticky;top:0;z-index:100;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:10px 28px;
+    background:rgba(20,17,31,0.82);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .brand{display:flex;align-items:center;gap:12px;cursor:pointer;background:none;border:none;padding:0;}
+  .brand img{height:44px;width:auto;display:block;filter:drop-shadow(0 0 10px rgba(168,155,221,.35));}
+  .brand span{font-family:'Space Grotesk',sans-serif;font-weight:700;letter-spacing:.08em;color:var(--muted);font-size:13px;}
+
+  nav.mainnav{display:flex;gap:4px;}
+  nav.mainnav button{
+    background:none;border:none;color:var(--muted);
+    font-size:15px;font-weight:700;padding:10px 16px;cursor:pointer;
+    position:relative;transition:color .2s ease;
+    font-family:'Noto Sans TC',sans-serif;
+  }
+  nav.mainnav button:hover{color:var(--white);}
+  nav.mainnav button.active{color:var(--white);}
+  nav.mainnav button.active::after{
+    content:"";position:absolute;left:16px;right:16px;bottom:4px;height:2px;
+    background:var(--green);
+  }
+  .navbtn-hamburger{display:none;background:none;border:1px solid var(--line);border-radius:6px;color:var(--white);padding:8px 10px;cursor:pointer;}
+
+  main{min-height:70vh;}
+  section.page{display:none;}
+  section.page.active{display:block;}
+
+  .bgwrap{
+    position:relative;background-image:url('bg.jpg');background-size:cover;background-position:center 62%;
+  }
+  .bgwrap .veil{position:absolute;inset:0;background:linear-gradient(180deg, rgba(20,17,31,0.35) 0%, rgba(20,17,31,0.55) 45%, var(--ink) 100%);}
+  .bgwrap.short .veil{background:linear-gradient(180deg, rgba(20,17,31,0.45) 0%, rgba(20,17,31,0.72) 60%, var(--ink) 100%);}
+
+  .hero{position:relative;padding:min(16vh,150px) 28px 90px;text-align:center;}
+  .hero .eyebrow{margin-bottom:18px;}
+  .hero h1{
+    margin:0;color:var(--white);font-size:clamp(56px,11vw,132px);line-height:.95;
+    letter-spacing:.03em;
+    text-shadow:0 4px 40px rgba(0,0,0,.55), 0 0 60px rgba(168,155,221,.25);
+  }
+  .hero .roman{
+    display:block;margin-top:14px;font-family:'Space Grotesk',sans-serif;font-weight:700;
+    letter-spacing:.5em;font-size:clamp(13px,2vw,18px);color:var(--purple-light);text-transform:uppercase;
+  }
+
+  .pagehead{position:relative;padding:120px 28px 70px;text-align:center;}
+  .pagehead h2{margin:0;color:var(--white);font-size:clamp(38px,7vw,64px);letter-spacing:.04em;}
+  .pagehead .eyebrow{margin-bottom:16px;}
+
+  .container{max-width:980px;margin:0 auto;padding:0 24px;}
+  .wide{max-width:1180px;}
+
+  .panel{
+    background:var(--ink-soft);
+    border:1px solid var(--line);
+    clip-path:polygon(22px 0,100% 0,100% calc(100% - 22px),calc(100% - 22px) 100%,0 100%,0 22px);
+    padding:34px 36px;
+    position:relative;
+  }
+
+  .stack-section{padding:70px 28px 90px;}
+  .block-title{display:flex;align-items:center;gap:12px;margin-bottom:22px;flex-wrap:wrap;}
+  .block-title h3{margin:0;font-size:22px;color:var(--white);letter-spacing:.02em;}
+  .block-title .eyebrow{margin:0;}
+
+  .live-badge{
+    display:inline-flex;align-items:center;gap:6px;
+    background:rgba(226,85,90,.15);color:var(--red);border:1px solid rgba(226,85,90,.4);
+    font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:700;letter-spacing:.08em;
+    padding:4px 10px;border-radius:20px;text-transform:uppercase;
+  }
+  .live-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--red);animation:pulse 1.4s infinite;}
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.35;}}
+
+  .video-frame{
+    position:relative;width:100%;aspect-ratio:16/9;background:var(--ink-softer);
+    clip-path:polygon(22px 0,100% 0,100% calc(100% - 22px),calc(100% - 22px) 100%,0 100%,0 22px);
+    border:1px solid var(--line);overflow:hidden;
+  }
+  .video-frame iframe{width:100%;height:100%;border:none;display:block;}
+  .video-empty{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:var(--muted);text-align:center;padding:24px;}
+  .video-empty .eyebrow{margin:0;}
+  .video-empty p{margin:0;font-size:14px;}
+  .video-caption{margin-top:14px;color:var(--muted);font-size:13.5px;line-height:1.6;}
+  .video-caption b{color:var(--white);font-weight:700;}
+
+  .product-grid{display:grid;grid-template-columns:1fr 1fr;gap:26px;padding-bottom:110px;}
+  @media (max-width:760px){.product-grid{grid-template-columns:1fr;}}
+  .product-card{
+    background:#0d0b16;border:1px solid var(--line);
+    clip-path:polygon(22px 0,100% 0,100% calc(100% - 22px),calc(100% - 22px) 100%,0 100%,0 22px);
+    padding:32px 30px;display:flex;flex-direction:column;gap:16px;
+  }
+  .product-card h4{margin:0;font-size:24px;color:var(--white);}
+  .product-card .desc{color:#cfc9e4;font-size:14.5px;line-height:1.8;margin:0;}
+  .version-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:auto;}
+  .version-tags span{
+    font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:600;letter-spacing:.03em;
+    color:var(--purple-light);border:1px solid var(--purple-mid);padding:5px 10px;border-radius:3px;
+  }
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    padding:13px 22px;font-size:15px;font-weight:700;border:none;cursor:pointer;
+    text-decoration:none;margin-top:6px;letter-spacing:.02em;
+    clip-path:polygon(10px 0,100% 0,100% calc(100% - 10px),calc(100% - 10px) 100%,0 100%,0 10px);
+  }
+  .btn-download{background:var(--green);color:#0d1a10;}
+  .btn-download:hover{background:#54e293;}
+  .btn-disabled{background:#312c42;color:#6a6482;cursor:not-allowed;}
+
+  .about-wrap{padding:70px 28px 110px;}
+  .about-panel h3{margin:0 0 22px;font-size:26px;color:var(--white);}
+  .about-panel .story{color:#d6d0ea;font-size:15.5px;line-height:2.05;white-space:pre-wrap;}
+
+  footer{
+    border-top:1px solid var(--line);padding:36px 28px 28px;background:var(--ink);
+    display:flex;flex-direction:column;align-items:center;gap:16px;
+  }
+  .social-row{display:flex;gap:26px;}
+  .social-row a{
+    display:flex;align-items:center;gap:8px;color:var(--muted);text-decoration:none;
+    font-size:13px;font-weight:600;font-family:'Space Grotesk',sans-serif;letter-spacing:.03em;
+    transition:color .2s ease;
+  }
+  .social-row a:hover{color:var(--white);}
+  .social-row svg{width:18px;height:18px;fill:currentColor;}
+  .foot-bottom{color:#524b6b;font-size:12px;font-family:'Space Grotesk',sans-serif;}
+
+  @media (max-width:680px){
+    nav.mainnav{display:none;position:absolute;top:64px;left:0;right:0;background:var(--ink-soft);border-bottom:1px solid var(--line);flex-direction:column;padding:8px 0;}
+    nav.mainnav.open{display:flex;}
+    nav.mainnav button{text-align:left;padding:14px 24px;}
+    .navbtn-hamburger{display:block;}
+    .product-grid{gap:20px;}
+    .hero{padding-top:120px;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <button class="brand" onclick="goto_('home')" aria-label="回首頁">
+    <img src="logo.png" alt="曜夜 logo">
+    <span>YAOYE</span>
+  </button>
+  <nav class="mainnav" id="mainnav">
+    <button data-view="home" onclick="goto_('home')">首頁</button>
+    <button data-view="schedule" onclick="goto_('schedule')">行程表</button>
+    <button data-view="products" onclick="goto_('products')">產品</button>
+    <button data-view="about" onclick="goto_('about')">關於我</button>
+  </nav>
+  <button class="navbtn-hamburger" onclick="document.getElementById('mainnav').classList.toggle('open')" aria-label="選單">☰</button>
+</header>
+
+<main>
+
+  <section class="page active" id="page-home" data-view="home">
+    <div class="bgwrap">
+      <div class="veil"></div>
+      <div class="hero">
+        <span class="eyebrow">VTuber</span>
+        <h1 class="display">曜夜</h1>
+        <span class="roman">YaoYe</span>
+      </div>
+    </div>
+
+    <div class="stack-section">
+      <div class="container">
+        <div class="block-title">
+          <span class="eyebrow">Latest</span>
+          <h3>最新影片 / 直播</h3>
+          <span class="live-badge" id="home-live-badge" style="display:none"><span class="dot"></span>LIVE</span>
+        </div>
+        <div class="video-frame" id="home-video-frame">
+          <div class="video-empty"><span class="eyebrow">讀取中</span><p>正在抓取最新內容⋯⋯</p></div>
+        </div>
+        <div class="video-caption" id="home-video-caption"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="page" id="page-schedule" data-view="schedule">
+    <div class="bgwrap short">
+      <div class="veil"></div>
+      <div class="pagehead">
+        <span class="eyebrow">Schedule</span>
+        <h2 class="display">行程表</h2>
+      </div>
+    </div>
+    <div class="stack-section">
+      <div class="container">
+        <div class="block-title">
+          <span class="eyebrow">Stream</span>
+          <h3>行程表直播</h3>
+          <span class="live-badge" id="sched-live-badge" style="display:none"><span class="dot"></span>LIVE</span>
+        </div>
+        <div class="video-frame" id="schedule-video-frame">
+          <div class="video-empty"><span class="eyebrow">讀取中</span><p>正在抓取行程表直播⋯⋯</p></div>
+        </div>
+        <div class="video-caption" id="schedule-video-caption"></div>
+        <p style="color:var(--muted);font-size:12.5px;margin-top:16px;line-height:1.7;">縮圖直接從這支直播影片擷取，直播畫面更新時，這裡會自動同步顯示最新縮圖，不需要手動更新。</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="page" id="page-products" data-view="products">
+    <div class="bgwrap short">
+      <div class="veil"></div>
+      <div class="pagehead">
+        <span class="eyebrow">Products</span>
+        <h2 class="display">產品</h2>
+      </div>
+    </div>
+    <div class="stack-section" style="padding-top:20px;">
+      <div class="container wide">
+        <div class="product-grid">
+
+          <div class="product-card">
+            <h4>黑貓材質包</h4>
+            <p class="desc">由 VTuber 曜夜繪製的 Minecraft 材質包。</p>
+            <div class="version-tags">
+              <span>1.8</span><span>1.21.8 – 1.21.11</span>
+            </div>
+            <a class="btn btn-download" href="https://modrinth.com/project/nef5ISp6" target="_blank" rel="noopener">點我下載</a>
+          </div>
+
+          <div class="product-card">
+            <h4>黑貓啟動器</h4>
+            <p class="desc">簡易 UI、原版啟動、正版驗證、模組載入器。</p>
+            <div class="version-tags">
+              <span>簡易 UI</span><span>原版啟動</span><span>正版驗證</span><span>模組載入器</span>
+            </div>
+            <button class="btn btn-disabled" disabled>開發中</button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="page" id="page-about" data-view="about">
+    <div class="bgwrap short">
+      <div class="veil"></div>
+      <div class="pagehead">
+        <span class="eyebrow">Profile</span>
+        <h2 class="display">關於我</h2>
+      </div>
+    </div>
+    <div class="about-wrap">
+      <div class="container">
+        <div class="panel about-panel">
+          <h3>關於我</h3>
+          <p class="story">我原本是一隻準備出道後都在晚上開台的夜貓子
+我喜歡那種夜深人靜的時候，也一直覺得夜晚才是最適合我的舞台
+
+但就在我設定直播時間時，腦中突然浮現出一個聲音
+
+聲音：「曜夜，你必須在下午開台，晚上開台會影響你的健康」
+曜夜：「蛤，那麼直白的嗎？」
+聲音：「聽我的準沒錯。」
+曜夜：「你是誰？」
+聲音：「無可奉告。」
+
+從那之後，只要我想維持晚上開台的決定，那個聲音就會再次響起，彷彿在拼命阻止我。
+
+雖然我到現在還不知道那個聲音究竟是誰，也不知道它為什麼會這麼說，但最後我還是決定聽它的建議
+畢竟，多一份保障，總會讓人安心一點
+
+至於更久之後的未來嘛⋯⋯如果生活節奏改變，或許會在晚上出現</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="social-row">
+    <a href="#" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24"><path d="M23.5 6.2a3 3 0 00-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 00.5 6.2 31 31 0 000 12a31 31 0 00.5 5.8 3 3 0 002.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 002.1-2.1A31 31 0 0024 12a31 31 0 00-.5-5.8zM9.6 15.6V8.4L15.8 12l-6.2 3.6z"/></svg>
+      YouTube
+    </a>
+    <a href="#" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24"><path d="M20.3 4.4A19.8 19.8 0 0015.5 3l-.3.6a14 14 0 014.2 1.5 17 17 0 00-14.8 0 14 14 0 014.2-1.5L8.5 3a19.8 19.8 0 00-4.8 1.4C.9 8.6.1 12.6.4 16.6a20 20 0 006 3l1-1.4a12.8 12.8 0 01-1.9-.9l.5-.4a14.3 14.3 0 0012 0l.5.4a12.8 12.8 0 01-1.9.9l1 1.4a20 20 0 006-3c.4-4.5-.7-8.5-3.3-12.2zM8.7 14.1c-.8 0-1.5-.8-1.5-1.7s.7-1.7 1.5-1.7 1.6.8 1.5 1.7c0 .9-.7 1.7-1.5 1.7zm6.6 0c-.8 0-1.5-.8-1.5-1.7s.7-1.7 1.5-1.7 1.6.8 1.5 1.7c0 .9-.6 1.7-1.5 1.7z"/></svg>
+      Discord
+    </a>
+    <a href="#" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24"><path d="M12 2.2c3.2 0 3.6 0 4.9.1 1.2 0 1.9.2 2.3.4.6.2 1 .5 1.4.9.4.4.7.8.9 1.4.2.4.4 1.1.4 2.3.1 1.3.1 1.7.1 4.9s0 3.6-.1 4.9c0 1.2-.2 1.9-.4 2.3-.2.6-.5 1-.9 1.4-.4.4-.8.7-1.4.9-.4.2-1.1.4-2.3.4-1.3.1-1.7.1-4.9.1s-3.6 0-4.9-.1c-1.2 0-1.9-.2-2.3-.4-.6-.2-1-.5-1.4-.9-.4-.4-.7-.8-.9-1.4-.2-.4-.4-1.1-.4-2.3-.1-1.3-.1-1.7-.1-4.9s0-3.6.1-4.9c0-1.2.2-1.9.4-2.3.2-.6.5-1 .9-1.4.4-.4.8-.7 1.4-.9.4-.2 1.1-.4 2.3-.4 1.3-.1 1.7-.1 4.9-.1zM12 0C8.7 0 8.3 0 7 .1 5.7.1 4.8.3 4 .6c-.8.3-1.5.7-2.2 1.4C1.1 2.7.7 3.4.4 4.2.1 5 0 5.9 0 7.2 0 8.5 0 8.9 0 12.2s0 3.6.1 4.9c0 1.3.2 2.2.5 3 .3.8.7 1.5 1.4 2.2.7.7 1.4 1.1 2.2 1.4.8.3 1.7.5 3 .5 1.3.1 1.7.1 5 .1s3.6 0 4.9-.1c1.3 0 2.2-.2 3-.5.8-.3 1.5-.7 2.2-1.4.7-.7 1.1-1.4 1.4-2.2.3-.8.5-1.7.5-3 .1-1.3.1-1.7.1-4.9s0-3.6-.1-4.9c0-1.3-.2-2.2-.5-3-.3-.8-.7-1.5-1.4-2.2C21.3 1.1 20.6.7 19.8.4 19 .1 18.1 0 16.8 0 15.5 0 15.1 0 12 0z"/><path d="M12 5.8a6.2 6.2 0 100 12.4 6.2 6.2 0 000-12.4zm0 10.2a4 4 0 110-8 4 4 0 010 8z"/><circle cx="18.4" cy="5.6" r="1.4"/></svg>
+      Instagram
+    </a>
+  </div>
+  <div class="foot-bottom">© 2026 曜夜</div>
+</footer>
+
+<script>
+const YT_API_KEY   = "AIzaSyAd-YiQO8cUtJZIlSsmxGtkFwCmfweyd8E";
+const CHANNEL_ID   = "UCaCD-bckhgZxP_abaD1Gmlg";
+const SCHEDULE_VIDEO_ID = "CodOFFcdXck";
+
+function goto_(view){
+  document.querySelectorAll('section.page').forEach(s=>{
+    s.classList.toggle('active', s.dataset.view === view);
+  });
+  document.querySelectorAll('nav.mainnav button').forEach(b=>{
+    b.classList.toggle('active', b.dataset.view === view);
+  });
+  document.getElementById('mainnav').classList.remove('open');
+  window.scrollTo(0,0);
+}
+
+function liveLabel(status){
+  if(status === 'live') return {text:'目前直播中', badge:true};
+  if(status === 'upcoming') return {text:'即將開始的直播', badge:true};
+  return {text:'最新影片', badge:false};
+}
+
+function showVideo(frameId, badgeId, captionId, videoId, title, status){
+  const frame = document.getElementById(frameId);
+  const badge = document.getElementById(badgeId);
+  const caption = document.getElementById(captionId);
+  frame.innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}" title="${title || ''}" allowfullscreen loading="lazy"></iframe>`;
+  const info = liveLabel(status);
+  badge.style.display = info.badge ? 'inline-flex' : 'none';
+  caption.innerHTML = `<b>${info.text}</b>　${title ? title : ''}`;
+}
+
+function showVideoError(frameId, captionId, msg){
+  document.getElementById(frameId).innerHTML =
+    `<div class="video-empty"><span class="eyebrow">目前無法讀取</span><p>${msg}</p></div>`;
+  document.getElementById(captionId).textContent = '';
+}
+
+async function loadHomeVideo(){
+  try{
+    const chRes = await fetch(`https://www.googleapis.com/youtube/v3/channels?part=contentDetails&id=${CHANNEL_ID}&key=${YT_API_KEY}`);
+    const chData = await chRes.json();
+    if(!chData.items || !chData.items.length) throw new Error('channel not found');
+    const uploadsId = chData.items[0].contentDetails.relatedPlaylists.uploads;
+
+    const plRes = await fetch(`https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${uploadsId}&maxResults=1&key=${YT_API_KEY}`);
+    const plData = await plRes.json();
+    if(!plData.items || !plData.items.length) throw new Error('no uploads');
+    const videoId = plData.items[0].snippet.resourceId.videoId;
+
+    const vidRes = await fetch(`https://www.googleapis.com/youtube/v3/videos?part=snippet&id=${videoId}&key=${YT_API_KEY}`);
+    const vidData = await vidRes.json();
+    const info = vidData.items[0].snippet;
+
+    showVideo('home-video-frame','home-live-badge','home-video-caption', videoId, info.title, info.liveBroadcastContent);
+  }catch(e){
+    console.error(e);
+    showVideoError('home-video-frame','home-video-caption','暫時抓不到最新內容，稍後重新整理再試一次。');
+  }
+}
+
+async function loadScheduleVideo(){
+  try{
+    const res = await fetch(`https://www.googleapis.com/youtube/v3/videos?part=snippet&id=${SCHEDULE_VIDEO_ID}&key=${YT_API_KEY}`);
+    const data = await res.json();
+    if(!data.items || !data.items.length) throw new Error('video not found');
+    const info = data.items[0].snippet;
+    showVideo('schedule-video-frame','sched-live-badge','schedule-video-caption', SCHEDULE_VIDEO_ID, info.title, info.liveBroadcastContent);
+  }catch(e){
+    console.error(e);
+    showVideoError('schedule-video-frame','schedule-video-caption','暫時抓不到行程表直播，稍後重新整理再試一次。');
+  }
+}
+
+loadHomeVideo();
+loadScheduleVideo();
+</script>
+</body>
+</html>
